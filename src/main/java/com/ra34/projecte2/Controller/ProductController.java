@@ -82,6 +82,13 @@ public class ProductController {
         }
         
     }
+    @GetMapping("/products/search/nom")
+    public ResponseEntity<?>searchByName(@RequestParam String prefix){
+        List<ProductResponseDTO> products = productService.searchByName(prefix);
+        return ResponseEntity.ok(products);
+    }
+    
+    
     
 }
 

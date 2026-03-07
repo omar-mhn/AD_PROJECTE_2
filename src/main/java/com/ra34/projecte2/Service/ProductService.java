@@ -105,4 +105,15 @@ public class ProductService {
         throw new RuntimeException("Producte no trobat amb ID: " + id);
         
     }
+
+    public List<ProductResponseDTO> searchByName(String prefix){
+        List<Product> products = productRepository.findByNameContainingAndStatusTrue(prefix);
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        for(Product p : products){
+            ProductResponseDTO dto = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, dto);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
 }
