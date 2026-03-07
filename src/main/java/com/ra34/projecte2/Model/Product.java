@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(length = 20, nullable = false)
@@ -36,29 +36,30 @@ public class Product {
     private Double rating;
 
     @Enumerated(EnumType.STRING) // Esto hace que la base de datos sea mucho más legible y evita errores
-    private Condition condition;
+    @Column(name = "product_condition")
+    private Condition productCondition;
 
     @Column(nullable = false)
     private boolean status = true;
 
-    @Column
+    @Column(name = "data_created")
     private Timestamp dataCreated;
 
-    @Column 
+    @Column(name = "data_updated")
     private Timestamp dataUpdated;
 
     public Product() {
     }
 
     public Product(Long id, String name, String description, int stock, double price, Double rating,
-            Condition condition, boolean status, Timestamp dataCreated, Timestamp dataUpdated) {
+            Condition productCondition, boolean status, Timestamp dataCreated, Timestamp dataUpdated) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.stock = stock;
         this.price = price;
         this.rating = rating;
-        this.condition = condition;
+        this.productCondition = productCondition;
         this.status = status;
         this.dataCreated = dataCreated;
         this.dataUpdated = dataUpdated;
@@ -113,11 +114,11 @@ public class Product {
     }
 
     public Condition getCondition() {
-        return condition;
+        return productCondition;
     }
 
-    public void setCondition(Condition condition) {
-        this.condition = condition;
+    public void setCondition(Condition productCondition) {
+        this.productCondition = productCondition;
     }
 
     public boolean isStatus() {
@@ -147,7 +148,7 @@ public class Product {
     @Override
     public String toString() {
         return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price="
-                + price + ", rating=" + rating + ", condition=" + condition + ", status=" + status + ", dataCreated="
+                + price + ", rating=" + rating + ", condition=" + productCondition + ", status=" + status + ", dataCreated="
                 + dataCreated + ", dataUpdated=" + dataUpdated + "]";
     }
 
