@@ -2,11 +2,15 @@ package com.ra34.projecte2.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.ra34.projecte2.DTO.ProductRequestDTO;
 import com.ra34.projecte2.DTO.ProductResponseDTO;
 import com.ra34.projecte2.Model.Condition;
 import com.ra34.projecte2.Model.Product;
@@ -51,15 +55,54 @@ public class ProductService {
        }
        return count;
     }
-
+    // Consultar un producte per id
     public ProductResponseDTO findById(Long id){
-        // si otional existe lo extrae si no lanza una excepción
-        Product p = productRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Producte no trobat amb ID: " + id));
-        ProductResponseDTO dto = new ProductResponseDTO();
-        // hacer mapping sin escribir manuelmente todo;
-        BeanUtils.copyProperties(p, dto);
+        Optional<Product> p = productRepository.findById(id);
+        if(p.isPresent()){
+            ProductResponseDTO dto = new ProductResponseDTO();
+            // hacer mapping sin escribir manuelmente todo;
+            BeanUtils.copyProperties(p.get(), dto);
+            return dto;
+        }
+        throw new RuntimeException("Producte no trobat");
 
-    return dto;
+    }
+    
+
+    //Consultar tots els productes
+    public List<ProductResponseDTO> findAll(){
+        List<Product> products = productRepository.findAll();
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        for(Product p : products){
+            ProductResponseDTO dto = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, dto);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    // Afegir un producte
+    public ProductResponseDTO saveProduct(ProductRequestDTO productDTO){
+        Product p = new Product();
+        BeanUtils.copyProperties(productDTO, p);
+        p.setStatus(true);
+        Product productGuardado = productRepository.save(p);
+        
+        ProductResponseDTO responseDTO = new ProductResponseDTO();
+        BeanUtils.copyProperties(productGuardado, responseDTO);
+        return responseDTO;
+    }
+    //Modificar l’estoc de productes
+    public ProductResponseDTO updateEstoc(Long id, int stock ){
+        Optional<Product> pOpt = productRepository.findById(id);
+        if(pOpt.isPresent()){
+            Product p = pOpt.get();
+           p.setStock(stock);
+            ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, productResponseDTO);
+            return productResponseDTO; 
+        }
+        throw new RuntimeException("Producte no trobat amb ID: " + id);
+        
     }
 }
