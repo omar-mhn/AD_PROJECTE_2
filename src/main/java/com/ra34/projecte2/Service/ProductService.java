@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.ra34.projecte2.DTO.ProductRequestDTO;
@@ -116,4 +117,20 @@ public class ProductService {
         }
         return dtos;
     }
+
+    public List<ProductResponseDTO> findAllOrderByPrice(String order){
+        Sort sort = order.equalsIgnoreCase("desc") 
+                ? Sort.by("price").descending() 
+                : Sort.by("price").ascending();
+        
+        List<Product> products = productRepository.findByStatusTrue(sort);
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        for (Product p : products) {
+            ProductResponseDTO dto = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, dto);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
 }
