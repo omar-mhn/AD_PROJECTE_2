@@ -83,10 +83,17 @@ public class ProductController {
         
     }
     @GetMapping("/products/search/nom")
-    public ResponseEntity<?>searchByName(@RequestParam String prefix){
+    public ResponseEntity<List<ProductResponseDTO>>searchByName(@RequestParam String prefix){
         List<ProductResponseDTO> products = productService.searchByName(prefix);
         return ResponseEntity.ok(products);
     }
+    
+    @GetMapping("/products/search/order")
+    public ResponseEntity<List<ProductResponseDTO>>getByOrder(@RequestParam String camp, @RequestParam String order){
+        List<ProductResponseDTO> results = productService.findAllOrderByPrice(order);
+        return ResponseEntity.ok(results);
+    }
+
     
     
     
