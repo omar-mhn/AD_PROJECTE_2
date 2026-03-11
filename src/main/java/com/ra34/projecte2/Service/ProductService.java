@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.ra34.projecte2.DTO.ProductRequestDTO;
 import com.ra34.projecte2.DTO.ProductResponseDTO;
 import com.ra34.projecte2.Model.Condition;
@@ -29,7 +30,7 @@ public class ProductService {
     public int processCsv(MultipartFile file) throws Exception{
         int count = 0;
         int liniaNum = 1;
-       try( BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))){
+        try( BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))){
             String linia =br.readLine();
             while ((linia = br.readLine()) != null) {
                 liniaNum ++;
@@ -53,9 +54,10 @@ public class ProductService {
                     throw new Exception("Error a la linia "+ liniaNum + ": " + e.getMessage() );
                 }
             }
-       }
-       return count;
+        }
+        return count;
     }
+    
     // Consultar un producte per id
     public ProductResponseDTO findById(Long id){
         Optional<Product> p = productRepository.findById(id);

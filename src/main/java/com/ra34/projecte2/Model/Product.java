@@ -1,6 +1,5 @@
 package com.ra34.projecte2.Model;
 
-
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
@@ -12,7 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-@Entity
+@Entity// entitat JPA =>mapeig de la base de dades a la classe
 @Table(name="products")
 public class Product {
 
@@ -28,11 +27,11 @@ public class Product {
 
     @Column(nullable = false)
     private int stock;
-    // Tipo primitivo (double) ya que el enunciado especifica "not null"
-    @Column
+    
+    @Column// Tipo primitivo (double) ya que el enunciado especifica "not null"
     private double price;
-    // Tipo objeto (Double) porque el enunciado indica que admite valores nulos
-    @Column
+    
+    @Column// Tipo objeto (Double) -> clase envoltorio (wrapper), admite null. El enunciado indica que tiene q admitir valores nulos
     private Double rating;
 
     @Enumerated(EnumType.STRING) // Esto hace que la base de datos sea mucho más legible y evita errores
