@@ -40,14 +40,16 @@ public class ProductService {
                 throw new Exception("Falten columnes a la línia " + liniaNum);
                 }
                 try{
+                    ProductRequestDTO dto = new ProductRequestDTO();
+                    dto.setName( data[0].trim());
+                    dto.setDescription(data[1].trim());
+                    dto.setStock(Integer.parseInt(data[2].trim()));
+                    dto.setPrice(Double.parseDouble(data[3].trim()));
+                    dto.setRating(Double.parseDouble(data[4].trim()));
+                    dto.setCondition(Condition.valueOf(data[5].trim().toLowerCase()));
+                    dto.setStatus(true);
                     Product p = new Product();
-                    p.setName( data[0].trim());
-                    p.setDescription(data[1].trim());
-                    p.setStock(Integer.parseInt(data[2].trim()));
-                    p.setPrice(Double.parseDouble(data[3].trim()));
-                    p.setRating(Double.parseDouble(data[4].trim()));
-                    p.setCondition(Condition.valueOf(data[5].trim().toLowerCase()));
-                    p.setStatus(true);
+                    BeanUtils.copyProperties(dto, p);
                     productRepository.save(p);
                     count ++;
                 }catch(Exception e){
