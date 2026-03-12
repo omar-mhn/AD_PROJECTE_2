@@ -10,4 +10,6 @@ import com.ra34.projecte2.Model.Product;
 public interface ProductRepository extends JpaRepository<Product,Long>{
     List<Product>findByNameContainingAndStatusTrue(String name);
     List<Product>findByStatusTrue(Sort sort);
+
+    
 }

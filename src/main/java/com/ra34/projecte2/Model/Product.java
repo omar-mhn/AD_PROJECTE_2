@@ -50,8 +50,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, String description, int stock, double price, Double rating,
-            Condition productCondition, boolean status, Timestamp dataCreated, Timestamp dataUpdated) {
+    public Product(Long id, String name, String description, int stock, double price, Double rating, Condition productCondition, boolean status, Timestamp dataCreated, Timestamp dataUpdated) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -146,10 +145,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price="
-                + price + ", rating=" + rating + ", condition=" + productCondition + ", status=" + status + ", dataCreated="
-                + dataCreated + ", dataUpdated=" + dataUpdated + "]";
+        return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price=" + price + ", rating=" + rating + ", condition=" + productCondition + ", status=" + status + ", dataCreated=" + dataCreated + ", dataUpdated=" + dataUpdated + "]";
     }
-
     
 }
