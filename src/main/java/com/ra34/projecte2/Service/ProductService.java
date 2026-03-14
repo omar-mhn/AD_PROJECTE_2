@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.data.domain.Pageable;
 import com.ra34.projecte2.DTO.ProductRequestDTO;
 import com.ra34.projecte2.DTO.ProductResponseDTO;
 import com.ra34.projecte2.Model.Condition;
@@ -230,14 +230,23 @@ public class ProductService {
         List<ProductResponseDTO> dtos = new ArrayList();
         for(Product p : products){
             ProductResponseDTO dto = new ProductResponseDTO();
-            dto.setId(p.getId());
-            dto.setName(p.getName());
-            dto.setDescription(p.getDescription());
-            dto.setPrice(p.getPrice());
-            dto.setStock(p.getStock());
-            dto.setRating(p.getRating());
-            dto.setCondition(p.getCondition());
-            BeanUtils.copyProperties(p, dtos);
+            BeanUtils.copyProperties(p, dto);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public List<ProductResponseDTO> getTop5QualityPrice() {
+        // Definimos el límite de 5 resultados 
+        Pageable topFive = PageRequest.of(0, 5);
+        
+        List<Product> products = productRepository.findTopQualityPrice(topFive);
+        
+        // Convertimos a DTO para esconder los campos de auditoría
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        for (Product p : products) {
+            ProductResponseDTO dto = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, dto);
             dtos.add(dto);
         }
         return dtos;

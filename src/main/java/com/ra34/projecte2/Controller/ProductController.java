@@ -143,6 +143,11 @@ public class ProductController {
         return ResponseEntity.ok(results);
 
     }
+    @GetMapping("products/qualitat-preu")
+    public ResponseEntity<List<ProductResponseDTO>> getBestQualityPriceRatio() {
+        List<ProductResponseDTO> topProducts = productService.getTop5QualityPrice();
+        return ResponseEntity.ok(topProducts);
+    }
     
 }
 
