@@ -242,7 +242,6 @@ public class ProductService {
         
         List<Product> products = productRepository.findTopQualityPrice(topFive);
         
-        // Convertimos a DTO para esconder los campos de auditoría
         List<ProductResponseDTO> dtos = new ArrayList<>();
         for (Product p : products) {
             ProductResponseDTO dto = new ProductResponseDTO();
