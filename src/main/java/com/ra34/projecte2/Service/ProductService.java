@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -216,5 +217,29 @@ public class ProductService {
         } else {
             throw new RuntimeException("Producte no trobat");
         }
+    }
+
+    public List<ProductResponseDTO> findAdvancedSearch(Double priceMin, Double priceMax, String prefix, String camp, String order, int limit) {
+        // Definimos la dirección del orden 
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        // Creamos el objeto Pageable para gestionar el límite y el campo de orden dinámico
+        PageRequest pageable = PageRequest.of(0, limit, Sort.by(direction, camp));
+
+        List<Product> products = productRepository.findWithFiltresJPQL(priceMax, priceMin, prefix, pageable);
+
+        List<ProductResponseDTO> dtos = new ArrayList();
+        for(Product p : products){
+            ProductResponseDTO dto = new ProductResponseDTO();
+            dto.setId(p.getId());
+            dto.setName(p.getName());
+            dto.setDescription(p.getDescription());
+            dto.setPrice(p.getPrice());
+            dto.setStock(p.getStock());
+            dto.setRating(p.getRating());
+            dto.setCondition(p.getCondition());
+            BeanUtils.copyProperties(p, dtos);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }

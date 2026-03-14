@@ -137,5 +137,12 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }    
+    @GetMapping("products/search/orders")
+    public ResponseEntity<List<ProductResponseDTO>> getAdvancedSearch(@RequestParam Double priceMin, @RequestParam Double priceMax,@RequestParam String prefix, @RequestParam String camp,@RequestParam String order,@RequestParam int limit){
+        List<ProductResponseDTO> results = productService.findAdvancedSearch(priceMin, priceMax, prefix, camp, order, limit);
+        return ResponseEntity.ok(results);
+
+    }
+    
 }
 
