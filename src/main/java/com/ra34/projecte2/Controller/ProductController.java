@@ -40,7 +40,16 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    //Consultar tots els productes
+    @GetMapping("/products")
+    public ResponseEntity<?> getAll(){
+        // no hace falta el try catch porque el Service no envia null sino un lista vacio si no existe
+        List<ProductResponseDTO> products = productService.findAll();
+        return ResponseEntity.ok(products);
+    } 
     
+    // Consultar un producte per id
     @GetMapping("/products/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id ){
         try{
@@ -50,15 +59,9 @@ public class ProductController {
             ErrorDTO error = new ErrorDTO(HttpStatus.NOT_FOUND.value(), e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }       
-    }
+    }    
 
-    @GetMapping("/products")
-    public ResponseEntity<?> getAll(){
-        // no hace falta el try catch porque el Service no envia null sino un lista vacio si no existe
-        List<ProductResponseDTO> products = productService.findAll();
-        return ResponseEntity.ok(products);
-    } 
-
+    // Afegir un producte
     @PostMapping("/products")
     public ResponseEntity<?> saveProduct(@RequestBody ProductRequestDTO product){
         try {
@@ -70,6 +73,7 @@ public class ProductController {
         }
     }
 
+    // Modificar tots els camps d’un producte
     @PutMapping("/products/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO productDTO){
         try {
@@ -80,7 +84,8 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
-    
+
+    // Modificar l’estoc de productes
     @PatchMapping("/products/{id}/estoc")
     public ResponseEntity<?>updateEstoc(@PathVariable Long id, @RequestBody int estoc){
         try{
@@ -92,6 +97,7 @@ public class ProductController {
         }        
     }
 
+    // Modificar el preu d’un producte
     @PatchMapping("/products/{id}/preu")
     public ResponseEntity<?>updatePreu(@PathVariable Long id, @RequestBody ProductRequestDTO productRequestDTO){
         try{
@@ -104,6 +110,7 @@ public class ProductController {
         
     }
 
+    // Borrat físic d'un producte
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         try {
@@ -115,6 +122,7 @@ public class ProductController {
         }
     }
 
+    // Borrat lógic d'un producte
     @DeleteMapping("/products/logic/{id}")
     public ResponseEntity<?> deleteLogicProduct(@PathVariable Long id){
         try {
@@ -126,35 +134,91 @@ public class ProductController {
         }
     } 
 
+    // Cerca per nom q contingui el valor de prefix i que el camp status sigui true
     @GetMapping("/products/search/nom")
     public ResponseEntity<List<ProductResponseDTO>>searchByName(@RequestParam String prefix){
         List<ProductResponseDTO> products = productService.searchByName(prefix);
         return ResponseEntity.ok(products);
     }
-        
+    
+    // Cerca per condició i que el camp status sigui true
     @GetMapping("/products/search/condition")
     public ResponseEntity<List<ProductResponseDTO>>getByCondition(@RequestParam String condition){
         List<ProdcutsResponseDTO> results = productService.findByCondition(condition);
         return ResponseEntity.ok(results);
     }
 
+    // Cerca per rang de preu, rating, o per camp i ordre, i que el camp status sigui true
     @GetMapping("/products/search/order")
-    public ResponseEntity<?> getByOrderRating(@RequestParam String camp, @RequestParam String order) {
+    public ResponseEntity<?> getByOrderRating(
+            @RequestParam(required = false) Double priceMin, 
+            @RequestParam(required = false) Double priceMax, 
+            @RequestParam(required = false) Double ratingMin, 
+            @RequestParam(required = false) Double ratingMax, 
+            @RequestParam(required = false) String prefix,
+            @RequestParam String camp, 
+            @RequestParam String order, 
+            @RequestParam(required = false) Integer limit) {
             
         try {
-            List<ProductResponseDTO> results = productService.getProductsOrderedByCamp(camp, order);
+            List<ProductResponseDTO> results;
+
+            // 1. Si hi ha paràmetres de PREU, executem la cerca per preu
+            if (priceMin != null && priceMax != null && prefix != null) {
+                results = productService.getProductsBetweenPricesOrdered(priceMin, priceMax, prefix, camp, order);
+            } 
+            // 2. Si hi ha paràmetres de RATING, executem la cerca per rating
+            else if (ratingMin != null && ratingMax != null) {
+                results = productService.getProductsBetweenRatingsOrdered(ratingMin, ratingMax, camp, order);
+            } 
+            // 3. Si no hi ha filtres, executem la cerca simple
+            else {
+                results = productService.getProductsOrderedByCamp(camp, order);
+            }
+
             return ResponseEntity.ok(results);
+
         } catch (Exception e) {
-            ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error en la cerca: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); 
         }
     }
-  
+    
+    // 5 productes que tenen millor relació qualitat - preu
     @GetMapping("products/qualitat-preu")
-    public ResponseEntity<List<ProductResponseDTO>> getBestQualityPriceRatio() {
-        List<ProductResponseDTO> topProducts = productService.getTop5QualityPrice();
-        return ResponseEntity.ok(topProducts);
-    }    
+    public ResponseEntity<?> getBestQualityPriceRatio() {
+        try {
+            List<ProductResponseDTO> topProducts = productService.getTop5QualityPrice();
+            return ResponseEntity.ok(topProducts);
+        } catch (Exception e) {
+            ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al obtenir els productes per qualitat-preu: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+    
+    // 10 primers productes nous amb millor valoració
+    @GetMapping("/products/productes-nous")
+    public ResponseEntity<?> getNewProducts() {
+        try {
+            List<ProductResponseDTO> newProducts = productService.getNewProducts();
+            return ResponseEntity.ok(newProducts);
+        } catch (Exception e) {
+            ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error  al obtenir els productes nous: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // Cerca per lots de 5 productes-files
+    @GetMapping("/products/page")
+    public ResponseEntity<?> getProductsPage(@RequestParam(defaultValue = "0") int page) { //valor per defecte 0~>primer bloc de 5 files(files 1-5). Quan el valor és "1"~>segón bloc de 5 files (files 6-10)
+        try {
+            List<ProductResponseDTO> results = productService.getProductsPaginated(page);
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
 
 }
 
