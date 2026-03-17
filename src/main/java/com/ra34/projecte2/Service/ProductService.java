@@ -9,10 +9,11 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.data.domain.Pageable;
 import com.ra34.projecte2.DTO.ProductRequestDTO;
 import com.ra34.projecte2.DTO.ProductResponseDTO;
 import com.ra34.projecte2.Model.Condition;
@@ -192,9 +193,20 @@ public class ProductService {
         }
     }
 
+
     public List<ProductResponseDTO> searchByName(String prefix){
         List<Product> products = productRepository.findByNameContainingAndStatusTrue(prefix);
         List<ProductResponseDTO> dtos = new ArrayList<>();
+
+    public List<ProductResponseDTO> findAdvancedSearch(Double priceMin, Double priceMax, String prefix, String camp, String order, int limit) {
+        // Definimos la dirección del orden 
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        // Creamos el objeto Pageable para gestionar el límite y el campo de orden dinámico
+        PageRequest pageable = PageRequest.of(0, limit, Sort.by(direction, camp));
+
+        List<Product> products = productRepository.findWithFiltresJPQL(priceMax, priceMin, prefix, pageable);
+
+        List<ProductResponseDTO> dtos = new ArrayList();
         for(Product p : products){
             ProductResponseDTO dto = new ProductResponseDTO();
             BeanUtils.copyProperties(p, dto);
@@ -251,6 +263,18 @@ public class ProductService {
         return llistaFinal;
     }
 
-
-
+    public List<ProductResponseDTO> getTop5QualityPrice() {
+        // Definimos el límite de 5 resultados 
+        Pageable topFive = PageRequest.of(0, 5);
+        
+        List<Product> products = productRepository.findTopQualityPrice(topFive);
+        
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        for (Product p : products) {
+            ProductResponseDTO dto = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, dto);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
 }
