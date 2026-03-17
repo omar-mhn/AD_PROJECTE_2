@@ -149,5 +149,12 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); 
         }
     }
+  
+    @GetMapping("products/qualitat-preu")
+    public ResponseEntity<List<ProductResponseDTO>> getBestQualityPriceRatio() {
+        List<ProductResponseDTO> topProducts = productService.getTop5QualityPrice();
+        return ResponseEntity.ok(topProducts);
+    }    
+
 }
 
