@@ -36,7 +36,7 @@ public class Product {
 
     @Enumerated(EnumType.STRING) // Esto hace que la base de datos sea mucho más legible y evita errores
     @Column(name = "product_condition")
-    private Condition productCondition;
+    private Condition condition;
 
     @Column(nullable = false)
     private boolean status = true;
@@ -50,14 +50,14 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, String description, int stock, double price, Double rating, Condition productCondition, boolean status, Timestamp dataCreated, Timestamp dataUpdated) {
+    public Product(Long id, String name, String description, int stock, double price, Double rating, Condition condition, boolean status, Timestamp dataCreated, Timestamp dataUpdated) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.stock = stock;
         this.price = price;
         this.rating = rating;
-        this.productCondition = productCondition;
+        this.condition = condition;
         this.status = status;
         this.dataCreated = dataCreated;
         this.dataUpdated = dataUpdated;
