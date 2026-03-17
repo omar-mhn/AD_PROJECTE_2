@@ -104,18 +104,6 @@ public class ProductController {
         
     }
 
-    @GetMapping("/products/search/nom")
-    public ResponseEntity<List<ProductResponseDTO>>searchByName(@RequestParam String prefix){
-        List<ProductResponseDTO> products = productService.searchByName(prefix);
-        return ResponseEntity.ok(products);
-    }
-    
-    @GetMapping("/products/search/order")
-    public ResponseEntity<List<ProductResponseDTO>>getByOrder(@RequestParam String camp, @RequestParam String order){
-        List<ProductResponseDTO> results = productService.findAllOrderByPrice(order);
-        return ResponseEntity.ok(results);
-    }
-
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         try {
@@ -136,6 +124,30 @@ public class ProductController {
             ErrorDTO error = new ErrorDTO(HttpStatus.NOT_FOUND.value(), e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
-    }    
+    } 
+
+    @GetMapping("/products/search/nom")
+    public ResponseEntity<List<ProductResponseDTO>>searchByName(@RequestParam String prefix){
+        List<ProductResponseDTO> products = productService.searchByName(prefix);
+        return ResponseEntity.ok(products);
+    }
+        
+    @GetMapping("/products/search/condition")
+    public ResponseEntity<List<ProductResponseDTO>>getByCondition(@RequestParam String condition){
+        List<ProdcutsResponseDTO> results = productService.findByCondition(condition);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/products/search/order")
+    public ResponseEntity<?> getByOrderRating(@RequestParam String camp, @RequestParam String order) {
+            
+        try {
+            List<ProductResponseDTO> results = productService.getProductsOrderedByCamp(camp, order);
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); 
+        }
+    }
 }
 

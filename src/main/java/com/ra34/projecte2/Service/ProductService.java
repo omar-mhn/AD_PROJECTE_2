@@ -169,33 +169,7 @@ public class ProductService {
             throw new RuntimeException("Producte no trobat");
         }
 
-    }
-
-    public List<ProductResponseDTO> searchByName(String prefix){
-        List<Product> products = productRepository.findByNameContainingAndStatusTrue(prefix);
-        List<ProductResponseDTO> dtos = new ArrayList<>();
-        for(Product p : products){
-            ProductResponseDTO dto = new ProductResponseDTO();
-            BeanUtils.copyProperties(p, dto);
-            dtos.add(dto);
-        }
-        return dtos;
-    }
-
-    public List<ProductResponseDTO> findAllOrderByPrice(String order){
-        Sort sort = order.equalsIgnoreCase("desc") 
-                ? Sort.by("price").descending() 
-                : Sort.by("price").ascending();
-        
-        List<Product> products = productRepository.findByStatusTrue(sort);
-        List<ProductResponseDTO> dtos = new ArrayList<>();
-        for (Product p : products) {
-            ProductResponseDTO dto = new ProductResponseDTO();
-            BeanUtils.copyProperties(p, dto);
-            dtos.add(dto);
-        }
-        return dtos;
-    }
+    }    
 
     public void deleteProduct(Long id) {
         Optional<Product> p = productRepository.findById(id);
@@ -217,4 +191,66 @@ public class ProductService {
             throw new RuntimeException("Producte no trobat");
         }
     }
+
+    public List<ProductResponseDTO> searchByName(String prefix){
+        List<Product> products = productRepository.findByNameContainingAndStatusTrue(prefix);
+        List<ProductResponseDTO> dtos = new ArrayList<>();
+        for(Product p : products){
+            ProductResponseDTO dto = new ProductResponseDTO();
+            BeanUtils.copyProperties(p, dto);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public List<ProductResponseDTO> findByCondition(String condition){
+        List<Product> products = productRepository.findByConditionAndStatusTrue(Condition.valueOf(condition.toLowerCase()));
+        List<ProductResponseDTO> responseDtos = new ArrayList<>();
+        for(Product p : products){
+            ProductResponseDTO responseDto = new ProductResponseDTO();
+            responseDto.setId(p.getId());
+            responseDto.setName(p.getName());
+            responseDto.setDescription(p.getDescription());
+            responseDto.setStock(p.getStock());
+            responseDto.setPrice(p.getPrice());
+            responseDto.setRating(p.getRating());
+            responseDto.setCondition(p.getCondition());
+            responseDtos.add(responseDto);
+        }
+        return responseDtos;
+    }
+
+    public List<ProductResponseDTO> getProductsOrderedByCamp(String camp, String order) {
+        
+        List<Product> productesActius;
+
+        // 1. Avaluem direcció de l'ordre i valor del camp si és "rating" o "price"
+        boolean isDesc = "desc".equalsIgnoreCase(order);
+
+        if ("rating".equalsIgnoreCase(camp)) {
+            productesActius = isDesc ? productRepository.findByStatusTrueOrderByRatingDesc() : productRepository.findByStatusTrueOrderByRatingAsc();
+        } else {            
+            productesActius = isDesc ? productRepository.findByStatusTrueOrderByPriceDesc() : productRepository.findByStatusTrueOrderByPriceAsc();
+        }
+        
+        // 2. Transformació a DTO 
+        List<ProductResponseDTO> llistaFinal = new ArrayList<>();
+        
+        for (Product product : productesActius) {
+            ProductResponseDTO dto = new ProductResponseDTO();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setStock(product.getStock());
+            dto.setPrice(product.getPrice());
+            dto.setRating(product.getRating());
+            dto.setCondition(product.getCondition());
+            
+            llistaFinal.add(dto);
+        }        
+        return llistaFinal;
+    }
+
+
+
 }
