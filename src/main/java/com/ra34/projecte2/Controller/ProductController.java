@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ra34.projecte2.DTO.ErrorDTO;
 import com.ra34.projecte2.DTO.ProductRequestDTO;
 import com.ra34.projecte2.DTO.ProductResponseDTO;
+import com.ra34.projecte2.Model.Condition;
 import com.ra34.projecte2.Service.ProductService;
 
 @RestController
@@ -144,7 +145,7 @@ public class ProductController {
     // Cerca per condició i que el camp status sigui true
     @GetMapping("/products/search/condition")
     public ResponseEntity<List<ProductResponseDTO>>getByCondition(@RequestParam String condition){
-        List<ProdcutsResponseDTO> results = productService.findByCondition(condition);
+        List<ProductResponseDTO> results = productService.findByCondition(condition);
         return ResponseEntity.ok(results);
     }
 
@@ -153,25 +154,23 @@ public class ProductController {
     public ResponseEntity<?> getByOrderRating(
             @RequestParam(required = false) Double priceMin, 
             @RequestParam(required = false) Double priceMax, 
-            @RequestParam(required = false) Double ratingMin, 
-            @RequestParam(required = false) Double ratingMax, 
             @RequestParam(required = false) String prefix,
-            @RequestParam String camp, 
-            @RequestParam String order, 
+            @RequestParam(required = false) String camp, 
+            @RequestParam(required = false) String order, 
             @RequestParam(required = false) Integer limit) {
             
         try {
             List<ProductResponseDTO> results;
 
-            // 1. Si hi ha paràmetres de PREU, executem la cerca per preu
+            // 1. Si hi ha paràmetres de PREU max i min, executem la cerca between els preus + prefix
             if (priceMin != null && priceMax != null && prefix != null) {
-                results = productService.getProductsBetweenPricesOrdered(priceMin, priceMax, prefix, camp, order);
+                results = productService.getProductsBetweenPricesTrue(priceMin, priceMax, prefix, camp);
             } 
-            // 2. Si hi ha paràmetres de RATING, executem la cerca per rating
-            else if (ratingMin != null && ratingMax != null) {
-                results = productService.getProductsBetweenRatingsOrdered(ratingMin, ratingMax, camp, order);
+            // 2. Si hi ha només paràmetre de PREU min i no max, executem per preu > a min
+            else if (priceMin != null && priceMax == null) {
+                results = productService.getProductsOverMinPriceTrue(priceMin, camp);
             } 
-            // 3. Si no hi ha filtres, executem la cerca simple
+            // 3. Si no hi ha filtres de preu, executem la cerca simple per camp (rating o price) i ordre
             else {
                 results = productService.getProductsOrderedByCamp(camp, order);
             }
@@ -183,12 +182,12 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); 
         }
     }
-    
+
     // 5 productes que tenen millor relació qualitat - preu
     @GetMapping("products/qualitat-preu")
-    public ResponseEntity<?> getBestQualityPriceRatio() {
+    public ResponseEntity<?> getBestQualityPriceRatio(@RequestParam(required = false) Integer limit) {
         try {
-            List<ProductResponseDTO> topProducts = productService.getTop5QualityPrice();
+            List<ProductResponseDTO> topProducts = productService.getTop5QualityPrice(limit);
             return ResponseEntity.ok(topProducts);
         } catch (Exception e) {
             ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al obtenir els productes per qualitat-preu: " + e.getMessage());
@@ -198,9 +197,9 @@ public class ProductController {
     
     // 10 primers productes nous amb millor valoració
     @GetMapping("/products/productes-nous")
-    public ResponseEntity<?> getNewProducts() {
+    public ResponseEntity<?> getNewProducts(@RequestParam Condition condition, @RequestParam(required = false) Integer limit){
         try {
-            List<ProductResponseDTO> newProducts = productService.getNewProducts();
+            List<ProductResponseDTO> newProducts = productService.getNewProducts(condition, limit);
             return ResponseEntity.ok(newProducts);
         } catch (Exception e) {
             ErrorDTO error = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error  al obtenir els productes nous: " + e.getMessage());
@@ -221,4 +220,3 @@ public class ProductController {
     }
 
 }
-
