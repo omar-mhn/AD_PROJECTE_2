@@ -112,11 +112,11 @@ public class Product {
     }
 
     public Condition getCondition() {
-        return productCondition;
+        return condition;
     }
 
-    public void setCondition(Condition productCondition) {
-        this.productCondition = productCondition;
+    public void setCondition(Condition condition) {
+        this.condition = condition;
     }
 
     public boolean isStatus() {
@@ -145,7 +145,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price=" + price + ", rating=" + rating + ", condition=" + productCondition + ", status=" + status + ", dataCreated=" + dataCreated + ", dataUpdated=" + dataUpdated + "]";
+        return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price=" + price + ", rating=" + rating + ", condition=" + condition + ", status=" + status + ", dataCreated=" + dataCreated + ", dataUpdated=" + dataUpdated + "]";
     }
     
 }

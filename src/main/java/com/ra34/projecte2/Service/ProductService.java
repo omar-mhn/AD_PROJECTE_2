@@ -9,12 +9,12 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
+
 import com.ra34.projecte2.DTO.ProductRequestDTO;
 import com.ra34.projecte2.DTO.ProductResponseDTO;
 import com.ra34.projecte2.Model.Condition;
@@ -225,108 +225,7 @@ public class ProductService {
         return responseDtos;
     }
 
-//====================================================================================================================================================================================================
-
-
-    /*public List<ProductResponseDTO> getProductsBetweenPricesAndRatingOrderedByCamp(Double priceMin, Double priceMax, String camp, String order, int limit) {
-
-        List<Product> productesActius;
-
-        // 1. Avaluem direcció de l'ordre i valor del camp si és "rating" o "price"
-        boolean isDesc = "desc".equalsIgnoreCase(order);
-
-        if ("rating".equalsIgnoreCase(camp)) {
-            productesActius = isDesc ? productRepository.findByStatusTrueOrderByRatingDesc() : productRepository.findByStatusTrueOrderByRatingAsc();
-        } else {            
-            productesActius = isDesc ? productRepository.findByStatusTrueOrderByPriceDesc() : productRepository.findByStatusTrueOrderByPriceAsc();
-        }
-
-
-        /* 
-        // Definimos la dirección del orden 
-        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        // Creamos el objeto Pageable para gestionar el límite y el campo de orden dinámico
-        PageRequest pageable = PageRequest.of(0, limit, Sort.by(direction, camp));
-
-        List<Product> products = productRepository.findWithFiltresJPQL(priceMax, priceMin, prefix, pageable);
-
-        List<ProductResponseDTO> dtos = new ArrayList();
-        for(Product p : products){
-            ProductResponseDTO dto = new ProductResponseDTO();
-            BeanUtils.copyProperties(p, dto);
-            dtos.add(dto);
-        }
-        return dtos;
-    }*/
-
-    public List<ProductResponseDTO> getProductsBetweenPricesOrdered(Double priceMin, Double priceMax, String prefix, String camp, String order) {
-
-        if( camp.equals("1") || camp.equals("true")) {
-
-            List<Product> productesActius;
-            
-            boolean isDesc = "desc".equalsIgnoreCase(order);
-
-            if ("rating".equalsIgnoreCase(camp)) {
-                productesActius = isDesc ? productRepository.findByStatusTrueOrderByRatingDesc() : productRepository.findByStatusTrueOrderByRatingAsc();
-            } else {            
-                productesActius = isDesc ? productRepository.findByStatusTrueOrderByPriceDesc() : productRepository.findByStatusTrueOrderByPriceAsc();
-            }
-
-        }
-        
-        // 1. Configurar ordenació
-        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, camp);
-        
-        // 2. Consulta a BBDD
-        List<Product> products = productRepository.findByStatusTrueAndPriceBetween(priceMin, priceMax, sort);
-        
-        // 3. Transformació DTO aïllada
-        List<ProductResponseDTO> result = new ArrayList<>();
-        for (Product product : products) {
-            ProductResponseDTO dto = new ProductResponseDTO();
-            dto.setId(product.getId());
-            dto.setName(product.getName());
-            dto.setDescription(product.getDescription());
-            dto.setStock(product.getStock());
-            dto.setPrice(product.getPrice());
-            dto.setRating(product.getRating());
-            dto.setCondition(product.getCondition());
-            
-            result.add(dto);
-        }
-        
-        return result;
-    }
-
-
-    public List<ProductResponseDTO> getProductsBetweenRatingsOrdered(Double ratingMin, Double ratingMax, String camp, String order) {
-        // 1. Configurar ordenació
-        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, camp);
-        
-        // 2. Consulta a BBDD
-        List<Product> products = productRepository.findByStatusTrueAndRatingBetween(ratingMin, ratingMax, sort);
-        
-        // 3. Transformació DTO aïllada
-        List<ProductResponseDTO> result = new ArrayList<>();
-        for (Product product : products) {
-            ProductResponseDTO dto = new ProductResponseDTO();
-            dto.setId(product.getId());
-            dto.setName(product.getName());
-            dto.setDescription(product.getDescription());
-            dto.setStock(product.getStock());
-            dto.setPrice(product.getPrice());
-            dto.setRating(product.getRating());
-            dto.setCondition(product.getCondition());
-            
-            result.add(dto);
-        }
-        
-        return result;
-    }
-
+    // Cerca per preu, rating i ordre, i que el camp status sigui true
     public List<ProductResponseDTO> getProductsOrderedByCamp(String camp, String order) {
         
         List<Product> productesActius;
@@ -358,15 +257,60 @@ public class ProductService {
         return llistaFinal;
     }
 
-//====================================================================================================================================================================================================
+    // Cerca per rang de preu, prefix i que el camp status sigui 1(true)
+    public List<ProductResponseDTO> getProductsBetweenPricesTrue(Double priceMin, Double priceMax, String prefix, String camp) {
+        if("1".equalsIgnoreCase(camp)){
+            List<Product> productsActive = productRepository.findByPriceRangeAndPrefix(priceMin, priceMax, prefix);
+            
+            List<ProductResponseDTO> result = new ArrayList<>();
+            for (Product product : productsActive) {
+                ProductResponseDTO dto = new ProductResponseDTO();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setDescription(product.getDescription());
+                dto.setStock(product.getStock());
+                dto.setPrice(product.getPrice());
+                dto.setRating(product.getRating());
+                dto.setCondition(product.getCondition());
+                
+                result.add(dto);
+            }        
+            return result;
+        }
+        throw new RuntimeException("El camp 'camp' no és vàlid per a la cerca per rang de preus.");
+    }
 
+    // Cerca per preu mínim i que el camp status sigui true
+    public List<ProductResponseDTO> getProductsOverMinPriceTrue(Double priceMin, String camp) {
+
+        if("true".equalsIgnoreCase(camp)){
+
+            List<Product> productsActive = productRepository.findByStatusTrueMinPrice(priceMin);
+            
+            List<ProductResponseDTO> result = new ArrayList<>();
+            for (Product product : productsActive) {
+                ProductResponseDTO dto = new ProductResponseDTO();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setDescription(product.getDescription());
+                dto.setStock(product.getStock());
+                dto.setPrice(product.getPrice());
+                dto.setRating(product.getRating());
+                dto.setCondition(product.getCondition());
+                
+                result.add(dto);
+            }        
+            return result;
+        }
+        throw new RuntimeException("El camp 'camp' no és vàlid per a la cerca per preu mínim.");
+    }
 
     // 5 productes que tenen millor relació qualitat - preu
-    public List<ProductResponseDTO> getTop5QualityPrice() {
-        // Definimos el límite de 5 resultados 
-        Pageable topFive = PageRequest.of(0, 5);
+    public List<ProductResponseDTO> getTop5QualityPrice(Integer limit) {
+        // Definim límit de files de resultats segons parametre o  en 5 resultats si és null 
+        Pageable num = PageRequest.of(0, limit != null ? limit : 5);
         
-        List<Product> products = productRepository.findTopQualityPrice(topFive);
+        List<Product> products = productRepository.findTopQualityPrice(num);
         
         List<ProductResponseDTO> dtos = new ArrayList<>();
         for (Product p : products) {
@@ -378,26 +322,31 @@ public class ProductService {
     }
 
     // 10 primers productes nous amb millor valoració
-    public List<ProductResponseDTO> getNewProducts() {
-        // Definimos el límite de 10 resultados
-        Pageable topTen = PageRequest.of(0, 10,)); 
+    public List<ProductResponseDTO> getNewProducts(Condition condition, Integer limit) {
         
-        List<Product> products = productRepository.findBestNewProducts(topTen);
-
-        List<ProductResponseDTO> result = new ArrayList<>();
-        for (Product product : products) {
-            ProductResponseDTO dto = new ProductResponseDTO();
-            dto.setId(product.getId());
-            dto.setName(product.getName());
-            dto.setDescription(product.getDescription());
-            dto.setStock(product.getStock());
-            dto.setPrice(product.getPrice());
-            dto.setRating(product.getRating());
-            dto.setCondition(product.getCondition());
+        if(condition == Condition.nou){
+            // Definim límit de files de resultats segons parametre o  en 10 resultats si és null
+            Pageable num = PageRequest.of(0, limit != null ? limit : 10);
             
-            result.add(dto);
-        }        
-        return result;
+            List<Product> products = productRepository.findBestProductsByCondition(condition, num);
+
+            List<ProductResponseDTO> result = new ArrayList<>();
+            for (Product product : products) {
+                ProductResponseDTO dto = new ProductResponseDTO();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setDescription(product.getDescription());
+                dto.setStock(product.getStock());
+                dto.setPrice(product.getPrice());
+                dto.setRating(product.getRating());
+                dto.setCondition(product.getCondition());
+                
+                result.add(dto);
+            }        
+            return result;
+        }
+        
+        throw new RuntimeException("Aquesta cerca només admet la condició 'nou'");
     }
 
     // Cerca per lots de 5 productes-files
