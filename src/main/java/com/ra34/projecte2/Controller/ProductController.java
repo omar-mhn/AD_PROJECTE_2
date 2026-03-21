@@ -100,9 +100,9 @@ public class ProductController {
 
     // Modificar el preu d’un producte
     @PatchMapping("/products/{id}/preu")
-    public ResponseEntity<?>updatePreu(@PathVariable Long id, @RequestBody ProductRequestDTO productRequestDTO){
+    public ResponseEntity<?>updatePreu(@PathVariable Long id, @RequestBody double nouPreu){
         try{
-            ProductResponseDTO responseDTO = productService.updatePrice(id, productRequestDTO.getPrice());
+            ProductResponseDTO responseDTO = productService.updatePrice(id, nouPreu);
             return ResponseEntity.ok(responseDTO);
         }catch(Exception e){
             ErrorDTO error = new ErrorDTO(HttpStatus.NOT_FOUND.value(), e.getMessage());
@@ -152,8 +152,8 @@ public class ProductController {
     // Cerca per rang de preu, rating, o per camp i ordre, i que el camp status sigui true
     @GetMapping("/products/search/order")
     public ResponseEntity<?> getByOrderRating(
-            @RequestParam(required = false) Double priceMin, 
-            @RequestParam(required = false) Double priceMax, 
+            @RequestParam(required = false) Double min, 
+            @RequestParam(required = false) Double max, 
             @RequestParam(required = false) String prefix,
             @RequestParam(required = false) String camp, 
             @RequestParam(required = false) String order, 
@@ -162,15 +162,15 @@ public class ProductController {
         try {
             List<ProductResponseDTO> results;
 
-            // 1. Si hi ha paràmetres de PREU max i min, executem la cerca between els preus + prefix
-            if (priceMin != null && priceMax != null && prefix != null) {
-                results = productService.getProductsBetweenPricesTrue(priceMin, priceMax, prefix, camp);
+            // 1. Si hi ha paràmetres de max i min, executem la cerca between els valors + prefix
+            if (min != null && max != null && prefix != null) {
+                results = productService.getProductsBetweenValuesTrue(min, max, prefix, camp);
             } 
-            // 2. Si hi ha només paràmetre de PREU min i no max, executem per preu > a min
-            else if (priceMin != null && priceMax == null) {
-                results = productService.getProductsOverMinPriceTrue(priceMin, camp);
+            // 2. Si hi ha només paràmetre de min i no max, executem per valor > a min
+            else if (min != null && max == null) {
+                results = productService.getProductsOverMinValueTrue(min, camp);
             } 
-            // 3. Si no hi ha filtres de preu, executem la cerca simple per camp (rating o price) i ordre
+            // 3. Si no hi ha filtres numèrics, executem la cerca simple per camp (rating o price) i ordre
             else {
                 results = productService.getProductsOrderedByCamp(camp, order);
             }

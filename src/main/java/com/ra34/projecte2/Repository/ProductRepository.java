@@ -19,13 +19,21 @@ public interface ProductRepository extends JpaRepository<Product,Long>{
     List<Product> findByStatusTrueOrderByRatingAsc();
     List<Product> findByStatusTrueOrderByRatingDesc(); 
     
-    // Cerca per rang de preu, prefix i que el camp status sigui 1(true)
-    @Query("SELECT p FROM Product p WHERE p.status = true AND p.price BETWEEN :priceMin AND :priceMax AND p.name LIKE %:prefix%")
-    List<Product> findByPriceRangeAndPrefix(@Param("priceMin") Double priceMin, @Param("priceMax") Double priceMax, @Param("prefix") String prefix);
+    // Cerca per rang de preu, prefix i que el camp status sigui true
+    @Query("SELECT p FROM Product p WHERE p.status = true AND p.price BETWEEN :min AND :max AND p.name LIKE %:prefix%")
+    List<Product> findByPriceRangeAndPrefix(@Param("min") Double min, @Param("max") Double max, @Param("prefix") String prefix);
+
+    // Cerca per rang de rating, prefix i que el camp status sigui true
+    @Query("SELECT p FROM Product p WHERE p.status = true AND p.rating BETWEEN :min AND :max AND p.name LIKE %:prefix%")
+    List<Product> findByRatingRangeAndPrefix(@Param("min") Double min, @Param("max") Double max, @Param("prefix") String prefix);
 
     // Cerca per preu mínim i que el camp status sigui true 
-    @Query("SELECT p FROM Product p WHERE p.status = true AND p.price >= :priceMin")
-    List<Product> findByStatusTrueMinPrice(@Param("priceMin") Double priceMin);
+    @Query("SELECT p FROM Product p WHERE p.status = true AND p.price >= :min")
+    List<Product> findByStatusTrueMinPrice(@Param("min") Double min);
+    
+    // Cerca per rating mínim i que el camp status sigui true 
+    @Query("SELECT p FROM Product p WHERE p.status = true AND p.rating >= :min")
+    List<Product> findByStatusTrueMinRating(@Param("min") Double min);
     
     // Consulta para obtener el top 5 basado en el cálculo (Rating / Price)
     @Query("SELECT p FROM Product p WHERE p.status = true AND p.price > 0 " + "ORDER BY (p.rating / p.price) DESC")

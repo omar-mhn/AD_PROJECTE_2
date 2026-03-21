@@ -18,14 +18,14 @@ public class ProductRequestDTO {
     
     
     public ProductRequestDTO(String name, String description, int stock, double price, Double rating,
-            Condition condition, boolean status) {
+            Condition condition) {
         this.name = name;
         this.description = description;
         this.stock = stock;
         this.price = price;
         this.rating = rating;
         this.condition = condition;
-        this.status = status;
+        this.status = true;
     }
 
 
