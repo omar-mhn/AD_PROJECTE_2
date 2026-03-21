@@ -141,6 +141,7 @@ public class ProductService {
         if(pOpt.isPresent()){
             Product p = pOpt.get();
             p.setStock(stock);
+            productRepository.save(p);
             ProductResponseDTO productResponseDTO = new ProductResponseDTO();
             BeanUtils.copyProperties(p, productResponseDTO);
             return productResponseDTO; 
