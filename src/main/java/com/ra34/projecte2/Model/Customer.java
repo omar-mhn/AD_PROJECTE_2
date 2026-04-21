@@ -17,12 +17,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     
     @Column(nullable = false)
     private String firstName;
@@ -35,14 +37,15 @@ public class Customer {
     private boolean status;
     
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "data_created",updatable = false)
     private LocalDateTime dataCreated;
 
     @UpdateTimestamp
+    @Column(name = "data_updated")
     private LocalDateTime dataUpdated;
 
     @OneToOne(fetch = FetchType.LAZY) //no carrega l'user fins q es cridi getUser()
-    @JoinColumn(name = "userId", unique = true)
+    @JoinColumn(name = "user_Id", unique = true)
     private User user;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
@@ -62,11 +65,11 @@ public class Customer {
     }
 
     // Getters i Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

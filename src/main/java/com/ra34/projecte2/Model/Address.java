@@ -1,18 +1,21 @@
 package com.ra34.projecte2.Model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "addresses")
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String address;
@@ -20,12 +23,13 @@ public class Address {
     @Column(nullable = false)
     private String city;
 
-    @Column(nullable = false)
+    @Column(name = "postal_code", nullable = false)
     private String postalCode;
 
     @Column(nullable = false)
     private String country;
 
+    @Column(name ="is_default")
     private Boolean isDefault;
 
     @ManyToOne
@@ -44,11 +48,11 @@ public class Address {
         this.isDefault = isDefault;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
