@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -22,7 +21,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity // representa la taula a bbdd "user" i q és una entitat gestionada per JPA
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id  //Primary Key
@@ -38,7 +37,7 @@ public class User {
     private boolean status;
 
     @CreationTimestamp
-    @Column(name = "data_creted", updatable = false)
+    @Column(name = "data_created", updatable = false)
     private LocalDateTime dataCreated;
 
     @UpdateTimestamp
@@ -77,12 +76,12 @@ public class User {
         this.id = id;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
