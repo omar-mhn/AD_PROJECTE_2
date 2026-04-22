@@ -36,4 +36,17 @@ public class UserService {
 
         return userMapper.toDTO(user);
     }
+
+    public UserDTO getUserById(Long id) {
+
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No s'ha trobat l'usuari amb id: " + id));
+
+        return userMapper.toFullDTO(user);
+    }
+
+        
+
+        
+
 }

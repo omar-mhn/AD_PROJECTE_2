@@ -2,6 +2,7 @@ package com.ra34.projecte2.Mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.ra34.projecte2.DTO.CustomerDTO;
 import com.ra34.projecte2.DTO.UserDTO;
 import com.ra34.projecte2.DTO.UserRequest;
 import com.ra34.projecte2.Model.Customer;
@@ -9,6 +10,7 @@ import com.ra34.projecte2.Model.User;
 
 @Component
 public class UserMapper {
+
     // ── Request DTO → Entitat JPA ──────────────────────────────────────
     public User toEntity(UserRequest request){
         if (request == null) return null;
@@ -34,5 +36,11 @@ public class UserMapper {
     public UserDTO toDTO(User user){
         if (user == null) return null;
         return new UserDTO(user.getId(), user.getEmail());
+    }
+
+    public UserDTO toFullDTO(User user){
+        CustomerDTO customerDTO = (user.getCustomer() != null) ? new CustomerDTO(user.getCustomer().getId(),user.getCustomer().getFirstName(), user.getCustomer().getLastName(), user.getCustomer().getPhone()) : null;
+        return new UserDTO(user.getId(), user.getEmail(), customerDTO);
+
     }
 }
