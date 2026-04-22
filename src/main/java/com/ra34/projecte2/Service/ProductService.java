@@ -21,6 +21,7 @@ import com.ra34.projecte2.Model.Condition;
 import com.ra34.projecte2.Model.Product;
 import com.ra34.projecte2.Repository.ProductRepository;
 
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -141,6 +142,7 @@ public class ProductService {
         if(pOpt.isPresent()){
             Product p = pOpt.get();
             p.setStock(stock);
+            productRepository.save(p);
             ProductResponseDTO productResponseDTO = new ProductResponseDTO();
             BeanUtils.copyProperties(p, productResponseDTO);
             return productResponseDTO; 
@@ -257,52 +259,58 @@ public class ProductService {
         return llistaFinal;
     }
 
-    // Cerca per rang de preu, prefix i que el camp status sigui 1(true)
-    public List<ProductResponseDTO> getProductsBetweenPricesTrue(Double priceMin, Double priceMax, String prefix, String camp) {
-        if("1".equalsIgnoreCase(camp)){
-            List<Product> productsActive = productRepository.findByPriceRangeAndPrefix(priceMin, priceMax, prefix);
-            
-            List<ProductResponseDTO> result = new ArrayList<>();
-            for (Product product : productsActive) {
-                ProductResponseDTO dto = new ProductResponseDTO();
-                dto.setId(product.getId());
-                dto.setName(product.getName());
-                dto.setDescription(product.getDescription());
-                dto.setStock(product.getStock());
-                dto.setPrice(product.getPrice());
-                dto.setRating(product.getRating());
-                dto.setCondition(product.getCondition());
-                
-                result.add(dto);
-            }        
-            return result;
+    // Cerca per rang de valor (preu o rating), prefix i que el camp status sigui true
+    public List<ProductResponseDTO> getProductsBetweenValuesTrue(Double min, Double max, String prefix, String camp) {
+        List<Product> productsActive;
+        if ("price".equalsIgnoreCase(camp)) {
+            productsActive = productRepository.findByPriceRangeAndPrefix(min, max, prefix);
+        } else if ("rating".equalsIgnoreCase(camp)) {
+            productsActive = productRepository.findByRatingRangeAndPrefix(min, max, prefix);
+        } else {
+            throw new RuntimeException("El camp 'camp' no és vàlid, ha de ser 'price' o 'rating'.");
         }
-        throw new RuntimeException("El camp 'camp' no és vàlid per a la cerca per rang de preus.");
+        
+        List<ProductResponseDTO> result = new ArrayList<>();
+        for (Product product : productsActive) {
+            ProductResponseDTO dto = new ProductResponseDTO();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setStock(product.getStock());
+            dto.setPrice(product.getPrice());
+            dto.setRating(product.getRating());
+            dto.setCondition(product.getCondition());
+            
+            result.add(dto);
+        }        
+        return result;
     }
 
-    // Cerca per preu mínim i que el camp status sigui true
-    public List<ProductResponseDTO> getProductsOverMinPriceTrue(Double priceMin, String camp) {
-
-        if("true".equalsIgnoreCase(camp)){
-
-            List<Product> productsActive = productRepository.findByStatusTrueMinPrice(priceMin);
-            
-            List<ProductResponseDTO> result = new ArrayList<>();
-            for (Product product : productsActive) {
-                ProductResponseDTO dto = new ProductResponseDTO();
-                dto.setId(product.getId());
-                dto.setName(product.getName());
-                dto.setDescription(product.getDescription());
-                dto.setStock(product.getStock());
-                dto.setPrice(product.getPrice());
-                dto.setRating(product.getRating());
-                dto.setCondition(product.getCondition());
-                
-                result.add(dto);
-            }        
-            return result;
+    // Cerca per valor mínim (preu o rating) i que el camp status sigui true
+    public List<ProductResponseDTO> getProductsOverMinValueTrue(Double min, String camp) {
+        List<Product> productsActive;
+        if ("price".equalsIgnoreCase(camp)) {
+            productsActive = productRepository.findByStatusTrueMinPrice(min);
+        } else if ("rating".equalsIgnoreCase(camp)) {
+            productsActive = productRepository.findByStatusTrueMinRating(min);
+        } else {
+            throw new RuntimeException("El camp 'camp' no és vàlid, ha de ser 'price' o 'rating'.");
         }
-        throw new RuntimeException("El camp 'camp' no és vàlid per a la cerca per preu mínim.");
+        
+        List<ProductResponseDTO> result = new ArrayList<>();
+        for (Product product : productsActive) {
+            ProductResponseDTO dto = new ProductResponseDTO();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setStock(product.getStock());
+            dto.setPrice(product.getPrice());
+            dto.setRating(product.getRating());
+            dto.setCondition(product.getCondition());
+            
+            result.add(dto);
+        }        
+        return result;
     }
 
     // 5 productes que tenen millor relació qualitat - preu
