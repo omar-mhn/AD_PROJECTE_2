@@ -124,4 +124,7 @@ public class User {
         }
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
 }
