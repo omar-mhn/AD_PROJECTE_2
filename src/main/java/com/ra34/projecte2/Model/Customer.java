@@ -139,4 +139,12 @@ public class Customer {
         address.setCustomer(null);  
     }
 
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }    
+
 }
