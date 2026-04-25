@@ -1,5 +1,6 @@
 package com.ra34.projecte2.Mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;

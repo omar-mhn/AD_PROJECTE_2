@@ -1,5 +1,8 @@
 package com.ra34.projecte2.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,39 @@ public class UserService {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No s'ha trobat l'usuari amb id: " + id));
 
         return userMapper.toFullDTO(user);
+    }
+
+    @Transactional
+    public UserDTO updateUserInfo(Long id, UserRequest request){
+            User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuari no trobat"));
+
+            user.setEmail(request.getEmail());
+            user.setPassword(request.getPassword());
+            if (request.getCustomer() != null && user.getCustomer() != null) {
+                user.getCustomer().setFirstName(request.getCustomer().getFirstName());
+                user.getCustomer().setLastName(request.getCustomer().getLastName());
+                user.getCustomer().setPhone(request.getCustomer().getPhone());
+            }
+            // Guardamos los cambios. Gracias a CascadeType.ALL en la entidad User
+            User updatedUser = userRepository.save(user);
+
+            return userMapper.toFullDTO(updatedUser);
+
+    }
+
+    @Transactional
+    public List<UserDTO> findAllUsers(){
+       List<User>users = userRepository.findAll();
+
+       List<UserDTO> userDTOs = new ArrayList<>();
+
+       for (User user : users) {
+            UserDTO dto = userMapper.toFullDTO(user);
+            userDTOs.add(dto);
+        }
+        
+        return userDTOs;
     }
 
 }
