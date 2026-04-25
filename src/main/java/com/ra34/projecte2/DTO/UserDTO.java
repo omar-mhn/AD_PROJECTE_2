@@ -4,7 +4,6 @@ public class UserDTO {
 
     private Long id;
     private String email; 
-    
     private CustomerDTO customer;
 
     // Constructor sense customer (per evitar recursivitat)
