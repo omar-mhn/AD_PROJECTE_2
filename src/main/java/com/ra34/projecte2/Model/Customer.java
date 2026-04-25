@@ -51,6 +51,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
+
     // Constructors
     public Customer(){
     }
@@ -137,6 +140,16 @@ public class Customer {
     public void removeAddress(Address address){
         this.addresses.remove(address);  
         address.setCustomer(null);  
+    }
+
+    public void addOrder (Order order){
+        this.orders.add(order); 
+        order.setCustomer(this);
+    }
+
+    public void removeOrder (Order order){
+        this.orders.remove(order);
+        order.setCustomer(null); // posa customer_id = NULL
     }
 
 }
