@@ -1,6 +1,8 @@
 package com.ra34.projecte2.Model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -54,9 +57,10 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Invoice invoice;
 
-    public Order(){}
+    @OneToMany(mappedBy ="order", cascade = CascadeType.ALL)
+    private List <Order_item> items = new ArrayList<>();
 
-    
+    public Order(){}
 
     public Order(Long id, LocalDateTime orderDate, double totalAmount, com.ra34.projecte2.Model.orderStatus orderStatus,
             boolean status, LocalDateTime dataCreated, LocalDateTime dataUpdated, Customer customer) {
@@ -145,6 +149,26 @@ public class Order {
             invoice.setOrder(this);
         }
     }
+
+    public List<Order_item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Order_item> items) {
+        this.items = items;
+    }
+
+    public void addItem(Order_item item) {
+        items.add(item);
+        item.setOrder(this);
+    }
+
+    public void removeItem(Order_item item) {
+        items.remove(item);
+        item.setOrder(null);
+    }
+    
+
 
     
 

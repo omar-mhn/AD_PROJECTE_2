@@ -2,6 +2,13 @@ package com.ra34.projecte2.Model;
 
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.ManyToAny;
+import org.hibernate.engine.internal.Cascade;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +16,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity// entitat JPA =>mapeig de la base de dades a la classe
@@ -46,6 +55,9 @@ public class Product {
 
     @Column(name = "data_updated")
     private Timestamp dataUpdated;
+
+    @OneToMany(mappedBy ="product", cascade = CascadeType.ALL)
+    private List<Order_item> items = new ArrayList<>();
 
     public Product() {
     }
@@ -143,9 +155,29 @@ public class Product {
         this.dataUpdated = dataUpdated;
     }
 
+    
+
     @Override
     public String toString() {
         return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price=" + price + ", rating=" + rating + ", condition=" + condition + ", status=" + status + ", dataCreated=" + dataCreated + ", dataUpdated=" + dataUpdated + "]";
+    }
+
+    public List<Order_item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Order_item> items) {
+        this.items = items;
+    }
+
+    public void addItem(Order_item item) {
+        items.add(item);
+        item.setProduct(this);
+    }
+
+    public void removeItem(Order_item item) {
+        items.remove(item);
+        item.setProduct(null);
     }
     
 }
