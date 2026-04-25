@@ -45,8 +45,4 @@ public class UserService {
         return userMapper.toFullDTO(user);
     }
 
-        
-
-        
-
 }

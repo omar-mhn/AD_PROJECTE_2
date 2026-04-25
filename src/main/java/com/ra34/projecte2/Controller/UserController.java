@@ -22,16 +22,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/createuser")
+    @PostMapping("/users")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserRequest request) {        
         UserDTO response = userService.createUserAndCustomer(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> getUser(@RequestParam Long id) {
         UserDTO response = userService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    
+
 }
