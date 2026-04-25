@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,7 +39,7 @@ public class Order {
 
     private boolean status;
 
-        @CreationTimestamp
+    @CreationTimestamp
     @Column(name = "data_created",updatable = false)
     private LocalDateTime dataCreated;
 
@@ -48,6 +50,9 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Invoice invoice;
 
     public Order(){}
 
@@ -129,6 +134,16 @@ public class Order {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+        if(invoice != null){
+            invoice.setOrder(this);
+        }
     }
 
     
