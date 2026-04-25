@@ -151,5 +151,12 @@ public class Customer {
         this.orders.remove(order);
         order.setCustomer(null); // posa customer_id = NULL
     }
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }    
 
 }
