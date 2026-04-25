@@ -8,8 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ra34.projecte2.DTO.AddressRequest;
 import com.ra34.projecte2.DTO.CustomerDTO;
+import com.ra34.projecte2.DTO.UserDTO;
+import com.ra34.projecte2.Mapper.AddressMapper;
 import com.ra34.projecte2.Mapper.CustomerMapper;
+import com.ra34.projecte2.Mapper.UserMapper;
 import com.ra34.projecte2.Model.Address;
 import com.ra34.projecte2.Model.Customer;
 import com.ra34.projecte2.Repository.AddressRepository;
@@ -28,6 +32,11 @@ public class CustomerService {
 
     @Autowired
     private CustomerMapper customerMapper;
+    @Autowired
+    private AddressMapper addressMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Transactional  //pq borrem diverses adreces
     public void deleteAllAdress(Long id){
@@ -48,6 +57,35 @@ public class CustomerService {
         List<CustomerDTO> customers = customerMapper.toDTOS(customerList);
         return customers;
     } 
+
+    @Transactional
+    public CustomerDTO addAddresses(Long customerId, List<AddressRequest> addressRequests) {
+        // El customer ha d’existir 
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer no trobat"));
+
+        for (AddressRequest dto : addressRequests) {
+            Address newAddress = new Address();
+            newAddress.setAddress(dto.getAddress());
+            newAddress.setCity(dto.getCity());
+            newAddress.setPostalCode(dto.getPostalCode());
+            newAddress.setCountry(dto.getCountry());
+            newAddress.setIsDefault(dto.getIsDefault());
+
+            customer.addAddress(newAddress);
+        }
+
+        Customer savedCustomer = customerRepository.save(customer);
+        return customerMapper.toDTO(savedCustomer);
+    }
+
+    @Transactional
+    public CustomerDTO getCustomerById(Long id) {
+       
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer no trobat"));
+        return customerMapper.toDTO(customer);
+    }
 
 
 }
