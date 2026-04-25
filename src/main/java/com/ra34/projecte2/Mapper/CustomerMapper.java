@@ -1,11 +1,11 @@
 package com.ra34.projecte2.Mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.ra34.projecte2.DTO.CustomerDTO;
-import com.ra34.projecte2.Model.Address;
 import com.ra34.projecte2.Model.Customer;
 
 @Component
