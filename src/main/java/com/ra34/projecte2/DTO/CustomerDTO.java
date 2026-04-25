@@ -2,10 +2,6 @@ package com.ra34.projecte2.DTO;
 
 import java.util.List;
 
-import com.ra34.projecte2.Model.Address;
-import com.ra34.projecte2.Model.Customer;
-import com.ra34.projecte2.Model.User;
-
 public class CustomerDTO {
 
     private Long Id;
@@ -14,7 +10,7 @@ public class CustomerDTO {
     private String phone;
 
     private String email;
-    private List<Address> addresses;
+    private List<AddressDTO> addresses;
 
     public CustomerDTO(){
     }
@@ -27,13 +23,18 @@ public class CustomerDTO {
         this.phone = phone;
     }
 
-    public CustomerDTO(String firstName, String lastName, String phone, String email, List<Address> address){
+   
+
+    public CustomerDTO(Long id, String firstName, String lastName, String phone, String email,
+            List<AddressDTO> addresses) {
+        Id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
-        this.addresses = address;
+        this.addresses = addresses;
     }
+
 
     public Long getId() {
         return Id;
@@ -67,13 +68,7 @@ public class CustomerDTO {
         this.phone = phone;
     }    
 
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
+  
 
 
     public String getEmail() {
@@ -83,6 +78,16 @@ public class CustomerDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public List<AddressDTO> getAddresses() {
+        return addresses;
+    }
+
+
+    public void setAddresses(List<AddressDTO> addresses) {
+        this.addresses = addresses;
     }
 
 }

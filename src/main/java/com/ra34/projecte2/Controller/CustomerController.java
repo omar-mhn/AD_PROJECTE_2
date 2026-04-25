@@ -8,11 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ra34.projecte2.DTO.AddressRequest;
 import com.ra34.projecte2.DTO.CustomerDTO;
 import com.ra34.projecte2.Service.CustomerService;
+
 
 @RestController
 @RequestMapping("/api")
@@ -33,6 +37,19 @@ public class CustomerController {
         customerService.deleteAllAdress(id);        
         return ResponseEntity.status(HttpStatus.OK).body("Totes les adreces del customer " + id + " han estat esborrades correctament");
     }   
+
+    @PostMapping("/customers/{id}")
+    public ResponseEntity <CustomerDTO> addAddresses( @PathVariable Long id,  @RequestBody List<AddressRequest> addressList){
+        CustomerDTO response = customerService.addAddresses(id, addressList);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/customers/{id}")
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
+        CustomerDTO response = customerService.getCustomerById(id);
+        return ResponseEntity.ok(response);
+    }
+    
 
 
 }
