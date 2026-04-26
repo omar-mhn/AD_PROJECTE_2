@@ -36,4 +36,12 @@ public class UserDTO {
         this.email = email;
     }
 
+    public CustomerDTO getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerDTO customer) {
+        this.customer = customer;
+    }
+
 }

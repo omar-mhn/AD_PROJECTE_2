@@ -10,10 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ra34.projecte2.DTO.AddressRequest;
 import com.ra34.projecte2.DTO.CustomerDTO;
-import com.ra34.projecte2.DTO.UserDTO;
-import com.ra34.projecte2.Mapper.AddressMapper;
 import com.ra34.projecte2.Mapper.CustomerMapper;
-import com.ra34.projecte2.Mapper.UserMapper;
 import com.ra34.projecte2.Model.Address;
 import com.ra34.projecte2.Model.Customer;
 import com.ra34.projecte2.Repository.AddressRepository;
@@ -32,11 +29,7 @@ public class CustomerService {
 
     @Autowired
     private CustomerMapper customerMapper;
-    @Autowired
-    private AddressMapper addressMapper;
-
-    @Autowired
-    private UserMapper userMapper;
+    
 
     @Transactional  //pq borrem diverses adreces
     public void deleteAllAdress(Long id){
