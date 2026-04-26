@@ -1,5 +1,7 @@
 package com.ra34.projecte2.Controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

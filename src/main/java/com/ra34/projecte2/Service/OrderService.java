@@ -1,5 +1,7 @@
 package com.ra34.projecte2.Service;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -104,5 +106,44 @@ public class OrderService {
         order = orderRepository.save(order);
 
         return orderMapper.toDTO(order);
+    }
+
+     @Transactional
+    public OrderDTO addProductsToOrder(Long orderId, List<Long> productIds) {
+        // Verificar si existe la orden
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orden no encontrada"));
+
+        // Por cada ID recibido, buscamos el producto y creamos el OrderItem
+        for (Long pId : productIds) {
+            Product product = productRepository.findById(pId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado: " + pId));
+
+            // Creamos el item 
+            OrderItem item = new OrderItem();
+            item.setOrder(order);
+            item.setProduct(product);
+            item.setQuantity(1); 
+            item.setUnitPrice(product.getPrice()); 
+
+            order.addItem(item);
+            
+            order.setTotalAmount(order.getTotalAmount() + product.getPrice());
+        }
+
+        return orderMapper.toDTO(orderRepository.save(order));
+    }
+
+    @Transactional
+    public OrderDTO cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orden no encontrada"));
+
+        if (!"PENDENT".equals(order.getOrderStatus().toString())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo se pueden cancelar órdenes PENDENT");
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELAT);
+        return orderMapper.toDTO(orderRepository.save(order));
     }
 }
