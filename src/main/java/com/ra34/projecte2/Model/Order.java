@@ -38,7 +38,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status",nullable = false)
-    private orderStatus orderStatus;
+    private OrderStatus orderStatus;
 
     private boolean status;
 
@@ -58,23 +58,20 @@ public class Order {
     private Invoice invoice;
 
     @OneToMany(mappedBy ="order", cascade = CascadeType.ALL)
-    private List <Order_item> items = new ArrayList<>();
+    private List <OrderItem> items = new ArrayList<>();
 
+    // Constructors
     public Order(){}
 
-    public Order(Long id, LocalDateTime orderDate, double totalAmount, orderStatus orderStatus, boolean status, LocalDateTime dataCreated, LocalDateTime dataUpdated, Customer customer) {
-        this.id = id;
+    public Order(LocalDateTime orderDate, double totalAmount, OrderStatus orderStatus, boolean status) {
+        
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
         this.status = status;
-        this.dataCreated = dataCreated;
-        this.dataUpdated = dataUpdated;
-        this.customer = customer;
     }
 
-
-
+    // Getters i Setters
     public Long getId() {
         return id;
     }
@@ -99,11 +96,11 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public orderStatus getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(orderStatus orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -149,29 +146,21 @@ public class Order {
         }
     }
 
-    public List<Order_item> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Order_item> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 
-    public void addItem(Order_item item) {
+    public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
     }
 
-    public void removeItem(Order_item item) {
+    public void removeItem(OrderItem item) {
         items.remove(item);
         item.setOrder(null);
     }
-    
-
-
-    
-
-
-    
-
 }

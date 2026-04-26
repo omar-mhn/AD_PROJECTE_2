@@ -1,23 +1,29 @@
 package com.ra34.projecte2.DTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
-import com.ra34.projecte2.Model.Order;
-import com.ra34.projecte2.Model.Order_item;
 
 public class OrderRequest {
 
     private long customerId;
-    private Order order;
-    private List<Order_item> order_item;
+
+    private LocalDateTime orderDate;
+
+    private List<OrderItemRequest> orderItems;
+
+    private String invoiceNumber;
+    private LocalDateTime issueDate;
+    private float taxAmount;
 
     // Constructor
-    public OrderRequest(){}
-
-    public OrderRequest(long customerId, Order order, List<Order_item> order_item){
+    
+    public OrderRequest(long customerId, LocalDateTime orderDate, List<OrderItemRequest> orderItems, String invoiceNumber, LocalDateTime issueDate, float taxAmount){
         this.customerId = customerId;
-        this.order = order;
-        this.order_item = order_item;
+        this.orderDate = orderDate;
+        this.orderItems = orderItems;
+        this.invoiceNumber = invoiceNumber;
+        this.issueDate = issueDate;
+        this.taxAmount = taxAmount;
     }
 
     // Getters i setters
@@ -27,17 +33,34 @@ public class OrderRequest {
     public void setCustomerId(long customerId) {
         this.customerId = customerId;
     }
-    public Order getOrder() {
-        return order;
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
     }
-    public List<Order_item> getOrder_item() {
-        return order_item;
+    public List<OrderItemRequest> getOrderItems() {
+        return orderItems;
     }
-    public void setOrder_item(List<Order_item> order_item) {
-        this.order_item = order_item;
+    public void setOrderItems(List<OrderItemRequest> orderItems) {
+        this.orderItems = orderItems;
     }
-
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+    public LocalDateTime getIssueDate() {
+        return issueDate;
+    }
+    public void setIssueDate(LocalDateTime issueDate) {
+        this.issueDate = issueDate;
+    }
+    public float getTaxAmount() {
+        return taxAmount;
+    }
+    public void setTaxAmount(float taxAmount) {
+        this.taxAmount = taxAmount;
+    }
 }

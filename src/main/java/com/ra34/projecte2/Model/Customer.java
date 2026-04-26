@@ -58,10 +58,6 @@ public class Customer {
     public Customer(){
     }
 
-    public Customer(Long id){
-        this.id = id;
-    }
-
     public Customer(String firstName, String lastName, String phone, Boolean status, LocalDateTime dataCreated, LocalDateTime dataUpdated){
         this.firstName = firstName;
         this.lastName = lastName;

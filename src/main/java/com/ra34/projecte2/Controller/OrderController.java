@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.ra34.projecte2.DTO.OrderDTO;
 import com.ra34.projecte2.DTO.OrderRequest;
 import com.ra34.projecte2.Service.OrderService;
 
@@ -29,10 +32,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/orders/{id}")
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable("id") Long id) {
-        OrderDTO response = orderService.getOrderById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @PatchMapping("/orders/process/{id}")
+    public ResponseEntity<OrderDTO> processOrder(@PathVariable("id") Long id) {
+        OrderDTO response = orderService.processOrder(id);
+        return ResponseEntity.ok(response);
     }
-
 }
