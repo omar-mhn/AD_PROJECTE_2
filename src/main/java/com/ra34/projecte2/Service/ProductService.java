@@ -333,7 +333,7 @@ public class ProductService {
     // 10 primers productes nous amb millor valoració
     public List<ProductResponseDTO> getNewProducts(Condition condition, Integer limit) {
         
-        if(condition == Condition.nou){
+        if(condition == Condition.NOU){
             // Definim límit de files de resultats segons parametre o  en 10 resultats si és null
             Pageable num = PageRequest.of(0, limit != null ? limit : 10);
             
