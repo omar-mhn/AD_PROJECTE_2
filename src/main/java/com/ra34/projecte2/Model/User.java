@@ -127,4 +127,14 @@ public class User {
     public Customer getCustomer() {
         return customer;
     }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    
 }
