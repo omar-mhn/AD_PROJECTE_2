@@ -7,44 +7,44 @@ import org.springframework.stereotype.Component;
 
 import com.ra34.projecte2.DTO.OrderDTO;
 import com.ra34.projecte2.DTO.OrderItemDTO;
+import com.ra34.projecte2.DTO.OrderRequest;
 import com.ra34.projecte2.Model.Order;
-import com.ra34.projecte2.Model.Order_item;
+import com.ra34.projecte2.Model.OrderItem;
+import com.ra34.projecte2.Model.OrderStatus;
+
 
 @Component
 public class OrderMapper {
-    public OrderDTO toDTO(Order order) {
+
+// DTO to Entity---------------------------------------//
+    public Order toEntity(OrderRequest orderRequest){
+        if (orderRequest == null) return null;
+
+        return new Order(orderRequest.getOrderDate(), 0.0, OrderStatus.PENDENT, true);        
+    }
+
+
+// Entity to DTO---------------------------------------//
+    public OrderDTO toDTO(Order order){
         if (order == null) return null;
 
-        OrderDTO dto = new OrderDTO();
-        dto.setId(order.getId());
-        dto.setTotalAmount(order.getTotalAmount());
+        List<OrderItemDTO> itemDTOs = new ArrayList<>();
         
-        // Convertim l'ENUM a String
-        if (order.getOrderStatus() != null) {
-            dto.setOrderStatus(order.getOrderStatus().toString());
-        }
-
-        //  MAPPER DE LA LLISTA D'ITEMS 
-        List<OrderItemDTO> itemDtos = new ArrayList<>();
-      
+        // Mapear los items del Order a DTOs iterando la lista
         if (order.getItems() != null) {
-            for (Order_item item : order.getItems()) {
-                OrderItemDTO iDto = new OrderItemDTO();
-                iDto.setId(item.getId());
-                iDto.setQuantity(item.getQuantity());
-                iDto.setUnitPrice(item.getUnitPrice());
-                
-                // Obtenim les dades del producte 
-                if (item.getProduct() != null) {
-                    iDto.setProductId(item.getProduct().getId());
-                    iDto.setProductName(item.getProduct().getName());
-                }
-                
-                itemDtos.add(iDto);
+            for (OrderItem item : order.getItems()) {
+                OrderItemDTO itemDTO = new OrderItemDTO(item.getQuantity(), item.getUnitPrice());
+                itemDTOs.add(itemDTO);
             }
         }
-        
-        dto.setItems(itemDtos);
-        return dto;
+
+        return new OrderDTO(
+            order.getId(), 
+            order.getCustomer() != null ? order.getCustomer().getId() : null, 
+            order.getOrderDate(), 
+            order.getTotalAmount(), 
+            order.getOrderStatus() != null ? order.getOrderStatus().toString() : null, 
+            itemDTOs
+        );
     }
 }

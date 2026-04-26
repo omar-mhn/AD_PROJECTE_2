@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,21 +30,14 @@ public class Invoice {
     @Column(name = "total_with_tax",nullable = false)
     private double totalWithTax;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public Invoice(){}
+    // Constructors
+    public Invoice() {}
 
-    public Invoice(Long id, String inovoiceNumber, LocalDateTime issueDate, double taxAmount, double totalWithTax,
-            Order orders) {
-        this.id = id;
-        this.invoiceNumber = inovoiceNumber;
-        this.issueDate = issueDate;
-        this.taxAmount = taxAmount;
-        this.totalWithTax = totalWithTax;
-        this.order = orders;
-    }
+    // Getters i Setters
 
     public Long getId() {
         return id;
@@ -59,8 +51,8 @@ public class Invoice {
         return invoiceNumber;
     }
 
-    public void setInvoiceNumber(String inovoiceNumber) {
-        this.invoiceNumber = inovoiceNumber;
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public LocalDateTime getIssueDate() {
@@ -91,10 +83,7 @@ public class Invoice {
         return order;
     }
 
-    public void setOrder(Order orders) {
-        this.order = orders;
+    public void setOrder(Order order) {
+        this.order = order;
     }
-
-    
-    
 }

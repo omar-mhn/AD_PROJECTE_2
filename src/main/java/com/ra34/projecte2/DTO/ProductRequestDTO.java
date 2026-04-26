@@ -10,15 +10,9 @@ public class ProductRequestDTO {
     private double price;
     private Double rating;
     private Condition condition;
-    private boolean status = true;
+    private boolean status;
 
-    public ProductRequestDTO() {
-    }
-
-    
-    
-    public ProductRequestDTO(String name, String description, int stock, double price, Double rating,
-            Condition condition, boolean status) {
+    public ProductRequestDTO(String name, String description, int stock, double price, Double rating, Condition condition, boolean status) {
         this.name = name;
         this.description = description;
         this.stock = stock;
@@ -27,8 +21,6 @@ public class ProductRequestDTO {
         this.condition = condition;
         this.status = status;
     }
-
-
 
     public String getName() {
         return name;

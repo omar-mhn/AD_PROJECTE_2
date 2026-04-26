@@ -3,32 +3,21 @@ package com.ra34.projecte2.DTO;
 import com.ra34.projecte2.Model.Condition;
 
 public class ProductResponseDTO {
-    private Long id;
+    
     private String name;
     private String description;
     private int stock;
     private double price;
     private Double rating;
     private Condition condition;
-
-    public ProductResponseDTO() {
-    }
     
-    public ProductResponseDTO(Long id, String name, String description, int stock, double price, Double rating, Condition condition) {
-        this.id = id;
+    public ProductResponseDTO(String name, String description, int stock, double price, Double rating, Condition condition) {
         this.name = name;
         this.description = description;
         this.stock = stock;
         this.price = price;
         this.rating = rating;
         this.condition = condition;
-    }
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

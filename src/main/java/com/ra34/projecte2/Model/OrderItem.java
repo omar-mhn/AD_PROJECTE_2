@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "order_item")
-public class Order_item {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,11 +29,11 @@ public class Order_item {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public Order_item(){}
+    public OrderItem(){}
 
     
 
-    public Order_item(Long id, int quantity, double unitPrice, Order order) {
+    public OrderItem(Long id, int quantity, double unitPrice, Order order) {
         this.id = id;
         this.quantity = quantity;
         this.unitPrice = unitPrice;

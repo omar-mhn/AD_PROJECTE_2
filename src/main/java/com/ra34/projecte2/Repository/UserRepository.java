@@ -7,5 +7,5 @@ import com.ra34.projecte2.Model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean findByEmail(String email);
+    boolean existsByEmail(String email);
 }

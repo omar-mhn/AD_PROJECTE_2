@@ -32,7 +32,7 @@ public class UserService {
     @Transactional  // Garantitzem que User i costumer es guardin a la mateixa transacció
     public UserDTO createUserAndCustomer(UserRequest request) {
         // Si ja existeix un usuari amb un email igual no ha de deixar crear-los.
-        if (userRepository.findByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "L'usuari amb aquest email ja existeix");
         }
         // mapegem de DTO a Entity

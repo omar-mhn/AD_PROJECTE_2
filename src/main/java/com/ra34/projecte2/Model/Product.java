@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,7 +53,7 @@ public class Product {
     private Timestamp dataUpdated;
 
     @OneToMany(mappedBy ="product", cascade = CascadeType.ALL)
-    private List<Order_item> items = new ArrayList<>();
+    private List<OrderItem> items = new ArrayList<>();
 
     public Product() {
     }
@@ -159,20 +158,20 @@ public class Product {
         return "Product [id=" + id + ", name=" + name + ", description=" + description + ", stock=" + stock + ", price=" + price + ", rating=" + rating + ", condition=" + condition + ", status=" + status + ", dataCreated=" + dataCreated + ", dataUpdated=" + dataUpdated + "]";
     }
 
-    public List<Order_item> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Order_item> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 
-    public void addItem(Order_item item) {
+    public void addItem(OrderItem item) {
         items.add(item);
         item.setProduct(this);
     }
 
-    public void removeItem(Order_item item) {
+    public void removeItem(OrderItem item) {
         items.remove(item);
         item.setProduct(null);
     }
