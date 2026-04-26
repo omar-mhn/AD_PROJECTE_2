@@ -103,7 +103,7 @@ public class UserService {
             }
         }
         User savedUser = userRepository.save(user);
-        return userMapper.toDTO(savedUser);
+        return userMapper.toUserWithRolesDTO(savedUser);
     }
 
     @Transactional
