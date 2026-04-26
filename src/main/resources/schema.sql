@@ -52,17 +52,16 @@ CREATE TABLE IF NOT EXISTS orders(
     customer_id BIGINT,
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS address(
-    CREATE TABLE IF NOT EXISTS addresses(
-        id BIGINT AUTO_INCREMENT PRIMARY KEY,
-        address VARCHAR(100) NOT NULL,
-        city VARCHAR(50) NOT NULL,
-        postal_code VARCHAR(20) NOT NULL,
-        country VARCHAR(50) NOT NULL,
-        is_default BOOLEAN,
-        customer_id BIGINT,
-        FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
-    );
+CREATE TABLE IF NOT EXISTS addresses(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    address VARCHAR(100) NOT NULL,
+    city VARCHAR(50) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    country VARCHAR(50) NOT NULL,
+    is_default BOOLEAN,
+    customer_id BIGINT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS order_item(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     quantity INT NOT NULL,

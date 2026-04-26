@@ -3,7 +3,6 @@ package com.ra34.projecte2.Service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,15 +20,15 @@ import jakarta.transaction.Transactional;
 @Service
 public class CustomerService {
     
-    @Autowired 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
+    private final CustomerMapper customerMapper;
 
-    @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
-    private CustomerMapper customerMapper;
-    
+    public CustomerService(CustomerRepository customerRepository, AddressRepository addressRepository, CustomerMapper customerMapper) {
+        this.customerRepository = customerRepository;
+        this.addressRepository = addressRepository;
+        this.customerMapper = customerMapper;
+    }
 
     @Transactional  //pq borrem diverses adreces
     public void deleteAllAdress(Long id){
