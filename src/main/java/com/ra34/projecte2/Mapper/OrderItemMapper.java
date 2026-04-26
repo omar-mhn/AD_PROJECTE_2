@@ -2,6 +2,7 @@ package com.ra34.projecte2.Mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.ra34.projecte2.DTO.OrderItemRequest;
 import com.ra34.projecte2.Model.OrderItem;
 
 @Component

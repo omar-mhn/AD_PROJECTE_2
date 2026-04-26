@@ -46,8 +46,6 @@ public class UserDTO {
     public void setCustomer(CustomerDTO customer) {
         this.customer = customer;
     }
-<<<<<<< HEAD
-=======
 
     public List<RoleDTO> getRoles() {
         return roles;
@@ -58,5 +56,4 @@ public class UserDTO {
     }
 
     
->>>>>>> e5aedd86f754e6e33b102f4f8b7971d208a63e76
 }

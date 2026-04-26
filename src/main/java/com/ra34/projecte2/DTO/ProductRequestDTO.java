@@ -12,6 +12,8 @@ public class ProductRequestDTO {
     private Condition condition;
     private boolean status;
 
+    public ProductRequestDTO(){}
+
     public ProductRequestDTO(String name, String description, int stock, double price, Double rating, Condition condition, boolean status) {
         this.name = name;
         this.description = description;
