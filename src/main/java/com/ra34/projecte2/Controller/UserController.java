@@ -2,12 +2,13 @@ package com.ra34.projecte2.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ra34.projecte2.DTO.UserDTO;
 import com.ra34.projecte2.DTO.UserRequest;
 import com.ra34.projecte2.Service.UserService;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -24,8 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService service){
+        this.userService = service;
+    }
 
     @PostMapping("/users")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserRequest request) {        
@@ -52,11 +54,15 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping("users/roles/{id}")
+    @PatchMapping("users/roles/{id}")
     public ResponseEntity<UserDTO> addRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
         UserDTO response = userService.addRolesToUser(id, roleIds);
         return ResponseEntity.ok(response);
     }
-    
 
+     @PatchMapping("/users/{id}")
+    public ResponseEntity<UserDTO> deleteRoles(@PathVariable Long id, @RequestBody List<Long> roles){
+        UserDTO response = userService.deleteRoles(id, roles);
+        return ResponseEntity.ok(response);
+    }
 }

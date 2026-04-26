@@ -3,7 +3,6 @@ package com.ra34.projecte2.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +19,17 @@ import com.ra34.projecte2.Repository.UserRepository;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private UserMapper userMapper;
+    public UserService(UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
+    }
 
-    @Autowired
-    private RoleRepository roleRepository;
-
+    // crear un nou usuari + customer relacionat
     @Transactional  // Garantitzem que User i costumer es guardin a la mateixa transacció
     public UserDTO createUserAndCustomer(UserRequest request) {
         // Si ja existeix un usuari amb un email igual no ha de deixar crear-los.
@@ -87,22 +88,35 @@ public class UserService {
     }
     // Endpoint per afegir rols a l’usuari
     @Transactional
-public UserDTO addRolesToUser(Long userId, List<Long> roleIds) {
-    
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+    public UserDTO addRolesToUser(Long userId, List<Long> roleIds) {
+        
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
-    // Buscar cada rol por su ID y añadirlo al usuario
-    for (Long rId : roleIds) {
-        Role role = roleRepository.findById(rId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no encontrado: " + rId));
+        // Buscar cada rol por su ID y añadirlo al usuario
+        for (Long rId : roleIds) {
+            Role role = roleRepository.findById(rId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no encontrado: " + rId));
 
-        if (!user.getRoles().contains(role)) {
-            user.getRoles().add(role);
+            if (!user.getRoles().contains(role)) {
+                user.getRoles().add(role);
+            }
         }
+        User savedUser = userRepository.save(user);
+        return userMapper.toDTO(savedUser);
     }
-    User savedUser = userRepository.save(user);
-    return userMapper.toDTO(savedUser);
-}
 
+    @Transactional
+    public UserDTO deleteRoles(Long id, List<Long> roles) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuari no trobat"));
+
+        // En esborrar-ho de la llista, Hibernate només esborra la relació a la taula intermèdia
+        user.getRoles().removeIf(role -> roles.contains(role.getId()));
+
+        User savedUser = userRepository.save(user);
+
+        // Retorna l'usuari amb la informació completa i els rols restants
+        return userMapper.toUserWithRolesDTO(savedUser);
+    }
 }

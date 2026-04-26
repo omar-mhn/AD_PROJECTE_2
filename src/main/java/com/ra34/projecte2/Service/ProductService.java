@@ -30,6 +30,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    
+
     // Càrrega massiva de dades d’un fitxer en format .csv
     @Transactional()
     public int processCsv(MultipartFile file) throws Exception{
