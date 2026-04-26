@@ -10,6 +10,9 @@ public class ProductResponseDTO {
     private double price;
     private Double rating;
     private Condition condition;
+    private Long id;
+
+    public ProductResponseDTO(){}
     
     public ProductResponseDTO(String name, String description, int stock, double price, Double rating, Condition condition) {
         this.name = name;
@@ -60,5 +63,9 @@ public class ProductResponseDTO {
     }
     public void setCondition(Condition condition) {
         this.condition = condition;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }    
 }

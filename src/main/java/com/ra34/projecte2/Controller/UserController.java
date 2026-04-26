@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,13 +56,13 @@ public class UserController {
     }
 
     @PatchMapping("users/roles/{id}")
-    public ResponseEntity<UserDTO> addRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
+    public ResponseEntity<UserDTO> addRoles(@PathVariable("id") Long id, @RequestBody List<Long> roleIds) {
         UserDTO response = userService.addRolesToUser(id, roleIds);
         return ResponseEntity.ok(response);
     }
 
-     @PatchMapping("/users/{id}")
-    public ResponseEntity<UserDTO> deleteRoles(@PathVariable Long id, @RequestBody List<Long> roles){
+    @DeleteMapping("/users/roles/{id}")
+    public ResponseEntity<UserDTO> deleteRoles(@PathVariable("id") Long id, @RequestBody List<Long> roles){
         UserDTO response = userService.deleteRoles(id, roles);
         return ResponseEntity.ok(response);
     }

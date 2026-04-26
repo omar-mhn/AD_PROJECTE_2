@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users(
     data_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-CREATE TABLE IF NOT EXISTS role(
+CREATE TABLE IF NOT EXISTS roles(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name ENUM("ADMIN", "USER", "MANAGER") NOT NULL,
     description VARCHAR(100)
@@ -53,15 +53,16 @@ CREATE TABLE IF NOT EXISTS orders(
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS address(
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    address VARCHAR(100) NOT NULL,
-    city VARCHAR(50) NOT NULL,
-    postal_code VARCHAR(20) NOT NULL,
-    country VARCHAR(50) NOT NULL,
-    is_default BOOLEAN,
-    customer_id BIGINT,
-    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
-);
+    CREATE TABLE IF NOT EXISTS addresses(
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        address VARCHAR(100) NOT NULL,
+        city VARCHAR(50) NOT NULL,
+        postal_code VARCHAR(20) NOT NULL,
+        country VARCHAR(50) NOT NULL,
+        is_default BOOLEAN,
+        customer_id BIGINT,
+        FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+    );
 CREATE TABLE IF NOT EXISTS order_item(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     quantity INT NOT NULL,

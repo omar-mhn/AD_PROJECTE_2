@@ -21,7 +21,6 @@ import com.ra34.projecte2.Model.Condition;
 import com.ra34.projecte2.Model.Product;
 import com.ra34.projecte2.Repository.ProductRepository;
 
-
 import jakarta.transaction.Transactional;
 
 @Service
