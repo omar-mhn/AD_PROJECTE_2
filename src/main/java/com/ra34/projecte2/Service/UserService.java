@@ -12,7 +12,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ra34.projecte2.DTO.UserDTO;
 import com.ra34.projecte2.DTO.UserRequest;
 import com.ra34.projecte2.Mapper.UserMapper;
+import com.ra34.projecte2.Model.Role;
 import com.ra34.projecte2.Model.User;
+import com.ra34.projecte2.Repository.RoleRepository;
 import com.ra34.projecte2.Repository.UserRepository;
 
 @Service
@@ -23,6 +25,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Transactional  // Garantitzem que User i costumer es guardin a la mateixa transacció
     public UserDTO createUserAndCustomer(UserRequest request) {
@@ -80,5 +85,24 @@ public class UserService {
         
         return userDTOs;
     }
+    // Endpoint per afegir rols a l’usuari
+    @Transactional
+public UserDTO addRolesToUser(Long userId, List<Long> roleIds) {
+    
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+    // Buscar cada rol por su ID y añadirlo al usuario
+    for (Long rId : roleIds) {
+        Role role = roleRepository.findById(rId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no encontrado: " + rId));
+
+        if (!user.getRoles().contains(role)) {
+            user.getRoles().add(role);
+        }
+    }
+    User savedUser = userRepository.save(user);
+    return userMapper.toDTO(savedUser);
+}
 
 }

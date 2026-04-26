@@ -1,10 +1,13 @@
 package com.ra34.projecte2.DTO;
 
+import java.util.List;
+
 public class UserDTO {
 
     private Long id;
     private String email; 
     private CustomerDTO customer;
+    private List<RoleDTO> roles;
 
     // Constructor sense customer (per evitar recursivitat)
     public UserDTO(Long id, String email){
@@ -36,4 +39,21 @@ public class UserDTO {
         this.email = email;
     }
 
+    public CustomerDTO getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerDTO customer) {
+        this.customer = customer;
+    }
+
+    public List<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleDTO> roles) {
+        this.roles = roles;
+    }
+
+    
 }

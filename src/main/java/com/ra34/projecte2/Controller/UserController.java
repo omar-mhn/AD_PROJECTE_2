@@ -51,6 +51,12 @@ public class UserController {
         List<UserDTO> users = userService.findAllUsers();
         return ResponseEntity.ok(users);
     }
+
+    @PostMapping("users/roles/{id}")
+    public ResponseEntity<UserDTO> addRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
+        UserDTO response = userService.addRolesToUser(id, roleIds);
+        return ResponseEntity.ok(response);
+    }
     
 
 }
