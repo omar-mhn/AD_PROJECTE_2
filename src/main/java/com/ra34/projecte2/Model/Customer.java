@@ -7,7 +7,6 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,6 +56,10 @@ public class Customer {
 
     // Constructors
     public Customer(){
+    }
+
+    public Customer(Long id){
+        this.id = id;
     }
 
     public Customer(String firstName, String lastName, String phone, Boolean status, LocalDateTime dataCreated, LocalDateTime dataUpdated){

@@ -62,8 +62,7 @@ public class Order {
 
     public Order(){}
 
-    public Order(Long id, LocalDateTime orderDate, double totalAmount, com.ra34.projecte2.Model.orderStatus orderStatus,
-            boolean status, LocalDateTime dataCreated, LocalDateTime dataUpdated, Customer customer) {
+    public Order(Long id, LocalDateTime orderDate, double totalAmount, orderStatus orderStatus, boolean status, LocalDateTime dataCreated, LocalDateTime dataUpdated, Customer customer) {
         this.id = id;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
